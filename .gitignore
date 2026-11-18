@@ -16,15 +16,3 @@ __pycache__/
 # Raw WESAD data
 data/WESAD/
 data/**/*.pkl
-
-
-# Original WESAD dataset
-data/WESAD/
-
-# Generated deep learning datasets
-outputs/*.npz
-
-# Python environment
-.venv/
-__pycache__/
-*.pyc
