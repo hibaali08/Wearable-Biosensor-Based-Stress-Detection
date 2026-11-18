@@ -155,6 +155,7 @@ This produces:
 * `outputs/model_comparison/model_comparison_summary.csv`
 * `outputs/model_comparison/macro_f1_comparison.png`
 * `outputs/model_comparison/accuracy_recall_comparison.png`
+* `outputs/model_comparison/confusion_matrices_comparison.png`
 
 ### 5. Regenerating Pretrained Checkpoints
 To generate or refresh standalone `.pth` checkpoints for Explainable AI:

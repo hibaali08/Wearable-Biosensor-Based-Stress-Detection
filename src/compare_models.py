@@ -230,7 +230,68 @@ plt.close()
 
 
 # --------------------------------
-# 8. COMPLETION
+# 8. CONFUSION MATRIX COMPARISON
+# --------------------------------
+
+from sklearn.metrics import confusion_matrix
+
+PREDICTION_FILES = {
+    "CNN": BASE_DIR / "cnn_loso_subjectwise" / "cnn_predictions.csv",
+    "LSTM": BASE_DIR / "lstm_loso_subjectwise" / "lstm_predictions.csv",
+    "GRU": BASE_DIR / "gru_loso_subjectwise" / "gru_predictions.csv"
+}
+
+cms = []
+for model_name, pred_path in PREDICTION_FILES.items():
+    pred_df = pd.read_csv(pred_path)
+    cm = confusion_matrix(pred_df["actual"], pred_df["predicted"], labels=[0, 1])
+    cms.append(cm)
+
+fig, axes = plt.subplots(1, 3, figsize=(16, 5), dpi=300)
+class_names = ["Baseline", "Stress"]
+
+for i, (ax, model_name, cm) in enumerate(zip(axes, models, cms)):
+    im = ax.imshow(cm, interpolation="nearest", cmap="Blues")
+    ax.set_title(f"{model_name} Confusion Matrix\n(Total: {cm.sum()} windows)", fontsize=13, fontweight="bold", pad=10)
+
+    tick_marks = np.arange(len(class_names))
+    ax.set_xticks(tick_marks)
+    ax.set_yticks(tick_marks)
+    ax.set_xticklabels(class_names, fontsize=11)
+    ax.set_yticklabels(class_names, fontsize=11)
+
+    ax.set_xlabel("Predicted Label", fontsize=11, labelpad=6)
+    if i == 0:
+        ax.set_ylabel("Actual Label", fontsize=11, labelpad=6)
+    else:
+        ax.set_ylabel("")
+
+    thresh = cm.max() / 2.0
+    for r in range(cm.shape[0]):
+        for c in range(cm.shape[1]):
+            count = cm[r, c]
+            pct = count / cm.sum() * 100
+            cell_text = f"{count}\n({pct:.1f}%)"
+            color = "white" if count > thresh else "black"
+            ax.text(c, r, cell_text, ha="center", va="center",
+                    color=color, fontsize=12, fontweight="bold")
+
+    fig.colorbar(im, ax=ax, fraction=0.046, pad=0.04)
+
+plt.suptitle("Deep Learning Models - Combined Confusion Matrix Comparison (15 LOSO Folds)",
+             fontsize=15, fontweight="bold", y=1.02)
+plt.tight_layout()
+
+plt.savefig(
+    OUTPUT_DIR / "confusion_matrices_comparison.png",
+    bbox_inches="tight",
+    dpi=300
+)
+plt.close()
+
+
+# --------------------------------
+# 9. COMPLETION
 # --------------------------------
 
 print("\nComparison completed successfully!")
